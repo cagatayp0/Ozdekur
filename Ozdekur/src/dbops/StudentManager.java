@@ -19,6 +19,7 @@ public class StudentManager {
         statement.setString(2, student.getName());
         statement.setString(3, student.getSurname());
         affected = statement.executeUpdate();
+        connection.close();
         return affected >= 1;
     }
 
@@ -75,6 +76,7 @@ public class StudentManager {
     	statement.setString(1, StudentNumber);
     	statement.setString(2, LessonName);
     	int affected = statement.executeUpdate();
+    	connection.close();
     	return affected >= 1;
     }
     
