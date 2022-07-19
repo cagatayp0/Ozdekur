@@ -80,4 +80,14 @@ public class StudentManager {
     	return affected >= 1;
     }
     
+    public boolean removeStudentFromLesson(String number) throws ClassNotFoundException, SQLException {
+    	Connection connection = DatabaseUtilities.getConnection();
+    	String sql = "delete from student_lessons where Number = ?";
+    	PreparedStatement statement = connection.prepareStatement(sql);
+    	statement.setString(1, number);
+    	int affected = statement.executeUpdate();
+    	connection.close();
+    	return affected >= 1;
+    }
+    
 }
