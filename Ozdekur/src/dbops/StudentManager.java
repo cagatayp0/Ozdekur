@@ -13,7 +13,7 @@ public class StudentManager {
     public boolean insert(Student student) throws ClassNotFoundException, SQLException {
         int affected;
         Connection connection = DatabaseUtilities.getConnection();
-        String sql = "insert into Students (Number, Name, Surname) values (?, ?, ?)";
+        String sql = "insert into students (Number, Name, Surname) values (?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, student.getStudentNumber());
         statement.setString(2, student.getName());
@@ -25,7 +25,7 @@ public class StudentManager {
     public Student find(String number) throws ClassNotFoundException, SQLException {
         Student student = null;
         Connection connection = DatabaseUtilities.getConnection();
-        String sql = "select * from Students where Number=?";
+        String sql = "select * from students where Number=?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, number);
         ResultSet resultset = statement.executeQuery();
@@ -42,7 +42,7 @@ public class StudentManager {
 
     public boolean delete(String number) throws ClassNotFoundException, SQLException {
         Connection connection = DatabaseUtilities.getConnection();
-        String sql = "delete from Students where Number=?";
+        String sql = "delete from students where Number=?";
         PreparedStatement statement = connection.prepareCall(sql);
         statement.setString(1, number);
         int affected = statement.executeUpdate();
@@ -53,7 +53,7 @@ public class StudentManager {
     public List<Student> list() throws ClassNotFoundException, SQLException {
         List<Student> studentList = new ArrayList<Student>();
         Connection connection = DatabaseUtilities.getConnection();
-        String sql = "select * from Students";
+        String sql = "select * from students";
         PreparedStatement statement = connection.prepareStatement(sql);
         ResultSet resultset = statement.executeQuery();
 
@@ -69,18 +69,13 @@ public class StudentManager {
     }
     
     public boolean insertStudentToLesson(String StudentNumber, String LessonName) throws ClassNotFoundException, SQLException {
-    	StudentManager man = new StudentManager();
-    	Student s = man.find(StudentNumber);
-    	String sql = "insert into BigTable values (?,?,?,?)";
     	Connection connection = DatabaseUtilities.getConnection();
+    	String sql = "insert into student_lessons values (?,?)";
     	PreparedStatement statement = connection.prepareStatement(sql);
-    	statement.setString(1, s.getName());
-    	statement.setString(2, s.getSurname());
-    	statement.setString(3, s.getStudentNumber());
-    	statement.setString(4, LessonName);
+    	statement.setString(1, StudentNumber);
+    	statement.setString(2, LessonName);
     	int affected = statement.executeUpdate();
-    	connection.close();
-    	return affected == 1;
+    	return affected >= 1;
     }
     
 }
