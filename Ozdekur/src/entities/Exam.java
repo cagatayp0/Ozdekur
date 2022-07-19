@@ -1,12 +1,13 @@
 package entities;
 
 import java.sql.Date;
+import java.util.List;
 
 public class Exam {
 	private Date date;
-	private String lesson;
+	private Lesson lesson;
 	private Double MeanNote;
-	private String Student;
+	private List<Student> studentList;
 	
 	public Exam() {
 		
@@ -20,14 +21,6 @@ public class Exam {
 		this.date = date;
 	}
 
-	public String getLesson() {
-		return lesson;
-	}
-
-	public void setLesson(String lesson) {
-		this.lesson = lesson;
-	}
-
 	public Double getMeanNote() {
 		return MeanNote;
 	}
@@ -36,12 +29,20 @@ public class Exam {
 		MeanNote = meanNote;
 	}
 
-	public String getStudent() {
-		return Student;
+	public List<Student> getStudentList() {
+		return studentList;
 	}
 
-	public void setStudent(String student) {
-		Student = student;
+	public void setStudentList(List<Student> studentList) {
+		this.studentList = studentList;
+	}
+
+	public Lesson getLesson() {
+		return lesson;
+	}
+
+	public void setLesson(Lesson lesson) {
+		this.lesson = lesson;
 	}
 		
 	

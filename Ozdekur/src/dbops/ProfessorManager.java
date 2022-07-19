@@ -16,7 +16,7 @@ public class ProfessorManager {
 	
     public int checkAdminStatus(String email) throws ClassNotFoundException, SQLException {
         Connection connection = DatabaseUtilities.getConnection();
-        String sql = "select IsAdmin from Professors where Email=?";
+        String sql = "select IsAdmin from professors where Email=?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, email);
         ResultSet resultset = statement.executeQuery();
@@ -28,7 +28,7 @@ public class ProfessorManager {
     public boolean insert(Professor prof) throws ClassNotFoundException, SQLException {
         int affected;
         Connection connection = DatabaseUtilities.getConnection();
-        String sql = "insert into Professors (Name, Surname, ID, Age, Email, Gender, IsAdmin) "
+        String sql = "insert into professors (Name, Surname, ID, Age, Email, Gender, IsAdmin) "
         		+ "values (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, prof.getName());
@@ -45,7 +45,7 @@ public class ProfessorManager {
     public Professor find(String Email) throws ClassNotFoundException, SQLException {
         Professor prof = null;
         Connection connection = DatabaseUtilities.getConnection();
-        String sql = "select * from Professors where Email=?";
+        String sql = "select * from professors where Email=?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, Email);
         ResultSet resultset = statement.executeQuery();
@@ -66,7 +66,7 @@ public class ProfessorManager {
 
     public boolean delete(String idNumber) throws ClassNotFoundException, SQLException {
         Connection connection = DatabaseUtilities.getConnection();
-        String sql = "delete from Professors where ID=?";
+        String sql = "delete from professors where ID=?";
         PreparedStatement statement = connection.prepareCall(sql);
         statement.setString(1, idNumber);
         int affected = statement.executeUpdate();
@@ -77,7 +77,7 @@ public class ProfessorManager {
     public List<Professor> list() throws ClassNotFoundException, SQLException {
         List<Professor> profList = new ArrayList<Professor>();
         Connection connection = DatabaseUtilities.getConnection();
-        String sql = "select * from Professors";
+        String sql = "select * from professors";
         PreparedStatement statement = connection.prepareStatement(sql);
         ResultSet resultset = statement.executeQuery();
 
@@ -98,7 +98,7 @@ public class ProfessorManager {
     
     public boolean checkEmailInProfessors(String email) throws ClassNotFoundException, SQLException {
     	Connection connection = DatabaseUtilities.getConnection();
-    	String sql = "select Email from Professors";
+    	String sql = "select Email from professors";
     	PreparedStatement statement = connection.prepareStatement(sql);
     	ResultSet resultset = statement.executeQuery();
     	
@@ -114,7 +114,7 @@ public class ProfessorManager {
     
     public boolean checkEmailInCredentials(String email) throws ClassNotFoundException, SQLException {
     	Connection connection = DatabaseUtilities.getConnection();
-    	String sql = "select Email from Credentials";
+    	String sql = "select Email from credentials";
     	PreparedStatement statement = connection.prepareStatement(sql);
     	ResultSet resultset = statement.executeQuery();
     	
@@ -131,7 +131,7 @@ public class ProfessorManager {
     public boolean createProfessorAccount(String email, String password) throws ClassNotFoundException, SQLException {
     	int affected;
     	Connection connection = DatabaseUtilities.getConnection();
-    	String sql = "insert into Credentials values (?,?)";
+    	String sql = "insert into credentials values (?,?)";
     	PreparedStatement statement = connection.prepareStatement(sql);
     	statement.setString(1, email);
     	statement.setString(2, password);
@@ -143,7 +143,7 @@ public class ProfessorManager {
     public List<Lesson> getLessons(String ProfEmail) throws ClassNotFoundException, SQLException {
         List<Lesson> lessonList = new ArrayList<Lesson>();
         Connection connection = DatabaseUtilities.getConnection();
-        String sql = "select * from Lessons where Professor_Email = ?";
+        String sql = "select * from professor_lessons where Email = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, ProfEmail);
         ResultSet resultset = statement.executeQuery();
@@ -161,76 +161,40 @@ public class ProfessorManager {
     public List<Student> getStudents(String ProfEmail) throws ClassNotFoundException, SQLException {
     	List<Student> studentList = new ArrayList<Student>();
     	Connection connection = DatabaseUtilities.getConnection();
-    	String sql = "select * from BigTable inner join Lessons on BigTable.Lesson_Name = Lessons.Lesson_Name "
-    			+ "where Professor_Email = ?";
+    	String sql = "select students.Name, students.Surname, students.Number from students "
+    			+ "inner join student_lessons on students.Number = student_lessons.Number "
+    			+ "inner join professor_lessons on student_lessons.Code = professor_lessons.Code "
+    			+ "where professor_lessons.Email = ?";
     	PreparedStatement statement = connection.prepareStatement(sql);
     	statement.setString(1, ProfEmail);
     	ResultSet resultset = statement.executeQuery();
     	
     	while (resultset.next()) {
     		Student student = new Student();
-			student.setName(resultset.getString(1));
+    		student.setName(resultset.getString(1));
     		student.setSurname(resultset.getString(2));
     		student.setStudentNumber(resultset.getString(3));
-    		student.setLesson(resultset.getString(4));
     		studentList.add(student);
-    		int count = 0;
-    		for (Student s : studentList) {
-    			if (student.getStudentNumber().equals(s.getStudentNumber())) {
-    				count += 1;
-    			}
-    		}		
-    		if (count > 1) {
-    			studentList.remove(student);
-    		}
     	}
     	connection.close();
     	return studentList;
     }
-    
-    public List<Student> removeStudentFromLesson(String number) throws ClassNotFoundException, SQLException {
-    	List<Student> studentList = new ArrayList<Student>();
-    	Connection connection = DatabaseUtilities.getConnection();
-    	String sql2 = "delete from BigTable where Student_Number = ?";
-    	String sql3 = "delete from Exams where Student_Number = ?";
-    	
-    	PreparedStatement statement3 = connection.prepareStatement(sql3);
-    	statement3.setString(1, number);
-    	statement3.executeUpdate();
-    			
-    	PreparedStatement statement2 = connection.prepareStatement(sql2);
-    	statement2.setString(1, number);
-    	statement2.executeUpdate();
-    	connection.close();
-    	return studentList;
-    }
-    
+        
     public List<Exam> getExams(String ProfEmail) throws ClassNotFoundException, SQLException {
-    	List<Exam> examList = new ArrayList<>();
+    	List<Exam> examList = new ArrayList<Exam>();
     	Connection connection = DatabaseUtilities.getConnection();
-    	String sql = "select * from Exams inner join Lessons on Exams.Lesson = Lessons.Lesson_Name "
-    			+ "where Professor_Email = ?";
+    	String sql = "select exams.Code, exams.Date from exams "
+    			+ "inner join professor_lessons on exams.Code = professor_lessons.Code "
+    			+ "inner join professors on professor_lessons.Email = professors.Email "
+    			+ "where professors.Email = ?";
     	PreparedStatement statement = connection.prepareStatement(sql);
     	statement.setString(1, ProfEmail);
     	ResultSet resultset = statement.executeQuery();
     	
     	while (resultset.next()) {
     		Exam exam = new Exam();
-    		exam.setLesson(resultset.getString(1));
-    		exam.setDate(resultset.getDate(4));
-    		exam.setMeanNote(resultset.getDouble(3));
-    		exam.setStudent(resultset.getString(2));
-    		examList.add(exam);
-    		int count = 0;
-    		for (Exam x : examList) {
-    			if (exam.getLesson().equals(x.getLesson()) && exam.getDate().equals(x.getDate()) && exam.getStudent().equals(x.getStudent())) {
-    				count += 1;
-    			}
-    		}		
-    		if (count > 1) {
-    			examList.remove(exam);
-    		}
-    	} 	
+    		
+    	}
     	connection.close();
     	return examList;
     }
