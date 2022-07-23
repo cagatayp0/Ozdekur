@@ -2,6 +2,7 @@
 
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -34,22 +35,42 @@
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Text fx:id="labelWelcome" layoutX="-1.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="WELCOME YOUR LESSONS ARE:" textAlignment="CENTER" wrappingWidth="665.7294921875">
+                        <Text fx:id="textWelcome" layoutY="153.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome" textAlignment="CENTER" wrappingWidth="665.7294921875">
                            <font>
                               <Font size="21.0" />
                            </font>
                         </Text>
                         <Button fx:id="buttonLogout" layoutX="301.0" layoutY="402.0" mnemonicParsing="false" onAction="#Logout" text="Logout" />
-                        <TableView fx:id="tableLessons" layoutX="239.0" layoutY="129.0" prefHeight="200.0" prefWidth="188.0">
-                          <columns>
-                            <TableColumn fx:id="columnLessonNames" prefWidth="111.0" text="Name" />
-                            <TableColumn fx:id="columnLessonCodes" prefWidth="76.0" text="Code" />
-                          </columns>
-                        </TableView>
+                        <Text fx:id="textLoggedInAs" layoutX="-1.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You are logged in as: " textAlignment="CENTER" wrappingWidth="665.7294921875">
+                           <font>
+                              <Font size="21.0" />
+                           </font>
+                        </Text>
                      </children>
                   </AnchorPane>
                </content>
 		    </Tab>
+            <Tab fx:id="tab12" closable="false">
+               <graphic>
+                  <Group>
+                     <children>
+                        <Label rotate="90" text="Lessons" />
+                     </children>
+                  </Group>
+               </graphic>
+               <content>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tableLessons" layoutX="239.0" layoutY="129.0" prefHeight="200.0" prefWidth="188.0">
+                           <columns>
+                              <TableColumn fx:id="columnLessonNames" prefWidth="111.0" text="Name" />
+                              <TableColumn fx:id="columnLessonCodes" prefWidth="76.0" text="Code" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
 		    <Tab fx:id="tab1" closable="false">
 		        <graphic>
 		            <Group>
@@ -59,9 +80,8 @@
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="tableStudents" layoutX="59.0" layoutY="48.0" prefHeight="200.0" prefWidth="546.0">
+                        <TableView fx:id="tableStudents" layoutX="123.0" layoutY="42.0" prefHeight="200.0" prefWidth="423.0">
                           <columns>
-                            <TableColumn fx:id="columnStudentLesson" prefWidth="122.0" text="Lesson" />
                             <TableColumn fx:id="columnStudentName" prefWidth="107.0" text="Name" />
                               <TableColumn fx:id="columnStudentSurname" minWidth="3.0" prefWidth="135.0" text="Surname" />
                               <TableColumn fx:id="columnStudentNumber" minWidth="7.0" prefWidth="181.0" text="Number" />
@@ -104,11 +124,12 @@
                                                 <TableColumn fx:id="columnExamNote" prefWidth="117.0" text="Mean Note" />
                                              </columns>
                                           </TableView>
-                                          <TextField layoutX="334.0" layoutY="214.0" />
-                                          <TextField layoutX="334.0" layoutY="238.0" />
+                                          <TextField fx:id="tfExamLessonName" layoutX="334.0" layoutY="214.0" />
                                           <Label layoutX="241.0" layoutY="218.0" text="Lesson" />
                                           <Label layoutX="241.0" layoutY="242.0" text="Date" />
-                                          <Button layoutX="353.0" layoutY="302.0" mnemonicParsing="false" text="Create new Exam" />
+                                          <Button fx:id="buttonCreateExam" layoutX="353.0" layoutY="302.0" mnemonicParsing="false" onAction="#CreateNewExam" text="Create new Exam" />
+                                          <DatePicker fx:id="dpExamDate" layoutX="334.0" layoutY="238.0" />
+                                          <Label fx:id="labelWrongExam" layoutX="1.0" layoutY="358.0" prefHeight="16.0" prefWidth="662.0" textAlignment="CENTER" textFill="RED" />
                                        </children>
                                     </AnchorPane>
                                  </content>
@@ -141,6 +162,18 @@
                           </tabs>
                         </TabPane>
                      </children></AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="tab111" closable="false">
+               <graphic>
+                  <Group>
+                     <children>
+                        <Label rotate="90" text="Settings" />
+                     </children>
+                  </Group>
+               </graphic>
+               <content>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" />
                </content>
             </Tab>
         </tabs>

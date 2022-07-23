@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import java.io.IOException;
@@ -15,6 +16,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import dbops.DataSingleton;
 import dbops.DatabaseUtilities;
 import dbops.ProfessorManager;
 
@@ -36,6 +39,10 @@ public class LoginController {
 	private PasswordField tfPassword;
 	@FXML
 	private Button buttonCreateAccount;
+	@FXML
+	private AnchorPane loginPane;
+	
+	DataSingleton data = DataSingleton.getInstance();
 
 	public void normalLogin(ActionEvent e) throws IOException, SQLException, ClassNotFoundException {
 		//checkLogin("MainScene.fxml");
@@ -43,15 +50,7 @@ public class LoginController {
 		if (m.checkAdminStatus(tfUsername.getText().toString()) == 1) {
 			checkLogin("AdminScene.fxml");
 		} else {
-//			String email = tfUsername.getText().toString();
-//			
-//			FXMLLoader loader = new FXMLLoader(getClass().getResource("MainScene.fxml"));
-//			Parent root = loader.load();
-//			MainSceneController c = loader.getController();
-//			c.setUser(email);
-//			loader.setController(c);
-			Main main = new Main();
-			main.changeScene("MainScene.fxml");
+			openMainScene(e);
 		}
 	}
 	
@@ -76,6 +75,13 @@ public class LoginController {
         	}
         }
         connection.close();
+	}
+	
+	private void openMainScene(ActionEvent event) throws IOException {
+		data.setEmail(tfUsername.getText().toString());
+		AnchorPane mainPane = FXMLLoader.load(getClass().getResource("MainScene.fxml"));
+		loginPane.getChildren().removeAll();
+		loginPane.getChildren().setAll(mainPane);
 	}
 		
 }

@@ -143,15 +143,17 @@ public class ProfessorManager {
     public List<Lesson> getLessons(String ProfEmail) throws ClassNotFoundException, SQLException {
         List<Lesson> lessonList = new ArrayList<Lesson>();
         Connection connection = DatabaseUtilities.getConnection();
-        String sql = "select * from professor_lessons where Email = ?";
+        String sql = "select lessons.Code, lessons.Name from professor_lessons "
+        		+ "inner join lessons on professor_lessons.Code = lessons.Code "
+        		+ "where Email = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, ProfEmail);
         ResultSet resultset = statement.executeQuery();
 
         while (resultset.next()) {
         	Lesson lesson = new Lesson();
-        	lesson.setLessonName(resultset.getString(1));
-        	lesson.setLessonCode(resultset.getString(2));
+        	lesson.setLessonCode(resultset.getString(1));
+        	lesson.setLessonName(resultset.getString(2));
         	lessonList.add(lesson);
         }
         connection.close();       
@@ -183,9 +185,10 @@ public class ProfessorManager {
     public List<Exam> getExams(String ProfEmail) throws ClassNotFoundException, SQLException {
     	List<Exam> examList = new ArrayList<Exam>();
     	Connection connection = DatabaseUtilities.getConnection();
-    	String sql = "select exams.Code, exams.Date from exams "
+    	String sql = "select exams.Code, exams.Date, lessons.Name from exams "
     			+ "inner join professor_lessons on exams.Code = professor_lessons.Code "
     			+ "inner join professors on professor_lessons.Email = professors.Email "
+    			+ "inner join lessons on exams.Code = lessons.Code "
     			+ "where professors.Email = ?";
     	PreparedStatement statement = connection.prepareStatement(sql);
     	statement.setString(1, ProfEmail);
@@ -193,10 +196,31 @@ public class ProfessorManager {
     	
     	while (resultset.next()) {
     		Exam exam = new Exam();
-    		
+    		Lesson lesson = new Lesson();
+    		lesson.setLessonCode(resultset.getString(1));
+    		lesson.setLessonName(resultset.getString(3));
+    		exam.setLesson(lesson);
+    		exam.setDate(resultset.getDate(2));
+    		exam.setLessonName(lesson.getLessonName());
+    		exam.setLessonCode(lesson.getLessonCode());
+    		examList.add(exam);
     	}
     	connection.close();
     	return examList;
+    }
+    
+    public boolean checkLessons(String Code, String Email) throws ClassNotFoundException, SQLException {
+    	Connection connection = DatabaseUtilities.getConnection();
+    	String sql = "select Code from professor_lessons where Email = ?";
+    	PreparedStatement statement = connection.prepareStatement(sql);
+    	statement.setString(1, Email);
+    	ResultSet resultset = statement.executeQuery();
+    	
+    	while (resultset.next()) {
+    		if (Code.equals(resultset.getString(1)))
+    			return true;
+    	}
+    	return false;
     }
     
 }	

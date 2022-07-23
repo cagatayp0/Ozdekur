@@ -7,6 +7,8 @@ public class Exam {
 	private Date date;
 	private Lesson lesson;
 	private Double MeanNote;
+	private String LessonName;
+	private String LessonCode;
 	private List<Student> studentList;
 	
 	public Exam() {
@@ -44,6 +46,21 @@ public class Exam {
 	public void setLesson(Lesson lesson) {
 		this.lesson = lesson;
 	}
-		
+
+	public String getLessonName() {
+		return LessonName;
+	}
+
+	public void setLessonName(String lessonName) {
+		LessonName = lessonName;
+	}
+
+	public String getLessonCode() {
+		return LessonCode;
+	}
+
+	public void setLessonCode(String lessonCode) {
+		LessonCode = lessonCode;
+	}	
 	
 }
