@@ -19,8 +19,11 @@ public class ProfessorManager {
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setString(1, email);
 		ResultSet resultset = statement.executeQuery();
-		while (resultset.next())
+		while (resultset.next()) {
+			connection.close();
 			return resultset.getInt("IsAdmin");
+		}
+		connection.close();
 		return 0;
 	}
 
@@ -38,6 +41,7 @@ public class ProfessorManager {
 		statement.setString(6, prof.getGender());
 		statement.setInt(7, prof.getIsAdmin());
 		affected = statement.executeUpdate();
+		connection.close();
 		return affected >= 1;
 	}
 
@@ -48,7 +52,6 @@ public class ProfessorManager {
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setString(1, Email);
 		ResultSet resultset = statement.executeQuery();
-
 		if (resultset.next()) {
 			prof = new Professor();
 			prof.setName(resultset.getString(1));
@@ -93,6 +96,23 @@ public class ProfessorManager {
 		}
 		connection.close();
 		return profList;
+	}
+	
+	public boolean alter(Professor professor) throws SQLException, ClassNotFoundException {
+		Connection connection = DatabaseUtilities.getConnection();
+		String sql = "update professors set Name = ?, Surname = ?, ID = ?, Age = ?, Email = ?, Gender = ? "
+				+ "where Email = ?";
+		PreparedStatement statement = connection.prepareCall(sql);
+		statement.setString(1, professor.getName());
+		statement.setString(2, professor.getSurname());
+		statement.setString(3, professor.getId());
+		statement.setInt(4, professor.getAge());
+		statement.setString(5, professor.getEmail());
+		statement.setString(6, professor.getGender());
+		statement.setString(7, professor.getEmail());
+		int affected = statement.executeUpdate();
+		connection.close();
+		return affected >= 1;
 	}
 
 	public boolean checkEmailInProfessors(String email) throws ClassNotFoundException, SQLException {
@@ -215,9 +235,13 @@ public class ProfessorManager {
 		ResultSet resultset = statement.executeQuery();
 
 		while (resultset.next()) {
-			if (Code.equals(resultset.getString(1)))
+			if (Code.equals(resultset.getString(1))) {
+				connection.close();
 				return true;
+			}
+
 		}
+		connection.close();
 		return false;
 	}
 	
@@ -238,6 +262,7 @@ public class ProfessorManager {
 			s.setTotalNote(resultset.getDouble(4));
 			studLessonList.add(s);
 		}
+		connection.close();
 		return studLessonList;
 	}
 

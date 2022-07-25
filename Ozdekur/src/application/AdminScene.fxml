@@ -61,12 +61,44 @@
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="tableLessons" layoutX="239.0" layoutY="129.0" prefHeight="200.0" prefWidth="188.0">
-                           <columns>
-                              <TableColumn fx:id="columnLessonNames" prefWidth="111.0" text="Name" />
-                              <TableColumn fx:id="columnLessonCodes" prefWidth="76.0" text="Code" />
-                           </columns>
-                        </TableView>
+                        <TabPane prefHeight="458.0" prefWidth="663.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab text="All Lessons">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TableView fx:id="tableLessons" layoutX="125.0" layoutY="24.0" prefHeight="200.0" prefWidth="413.0">
+                                             <columns>
+                                                <TableColumn fx:id="columnLessonNames" prefWidth="207.0" text="Name" />
+                                                <TableColumn fx:id="columnLessonCodes" prefWidth="205.0" text="Code" />
+                                             </columns>
+                                          </TableView>
+                                          <Button fx:id="buttonCreateNewLesson" layoutX="394.0" layoutY="311.0" mnemonicParsing="false" onAction="#CreateNewLesson" text="Create New Lesson" />
+                                          <Button fx:id="buttonDeleteLesson" layoutX="125.0" layoutY="224.0" mnemonicParsing="false" onAction="#DeleteLesson" text="Delete Lesson" />
+                                          <TextField fx:id="tfNewLessonName" layoutX="367.0" layoutY="283.0" />
+                                          <TextField fx:id="tfNewLessonCode" layoutX="367.0" layoutY="259.0" />
+                                          <Label layoutX="268.0" layoutY="287.0" text="Name:" />
+                                          <Label layoutX="270.0" layoutY="263.0" text="Code:" />
+                                          <Label fx:id="labelCreateLesson" layoutX="208.0" layoutY="351.0" prefHeight="16.0" prefWidth="248.0" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                            <Tab text="My Lessons">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TableView fx:id="tableMyLessons" layoutX="136.0" layoutY="56.0" prefHeight="200.0" prefWidth="392.0">
+                                            <columns>
+                                              <TableColumn fx:id="columnMyLessonName" prefWidth="198.0" text="Name" />
+                                              <TableColumn fx:id="columnMyLessonCode" prefWidth="193.0" text="Code" />
+                                            </columns>
+                                          </TableView>
+                                       </children></AnchorPane>
+                              </content>
+                            </Tab>
+                          </tabs>
+                        </TabPane>
                      </children>
                   </AnchorPane>
                </content>
@@ -97,6 +129,7 @@
                                           <TextField fx:id="tfStudentInsertLesson" layoutX="361.0" layoutY="306.0" />
                                           <Label layoutX="228.0" layoutY="310.0" text="Lesson to insert" />
                                           <Label fx:id="labelStudentAlreadyInLesson" layoutX="1.0" layoutY="374.0" prefHeight="16.0" prefWidth="663.0" text="" />
+                                          <Button fx:id="buttonDeleteStudent" layoutX="132.0" layoutY="269.0" mnemonicParsing="false" onAction="#DeleteStudent" text="Delete Student" />
                                        </children>
                                     </AnchorPane>
                                  </content>
@@ -117,6 +150,23 @@
                                        </children>
                                     </AnchorPane>
                                  </content>
+                              </Tab>
+                              <Tab text="Student Management">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TextField fx:id="tfNewStudentName" layoutX="332.0" layoutY="98.0" />
+                                          <TextField fx:id="tfNewStudentSurname" layoutX="332.0" layoutY="122.0" />
+                                          <TextField fx:id="tfNewStudentNumber" layoutX="332.0" layoutY="146.0" />
+                                          <Label layoutX="205.0" layoutY="102.0" text="Name:" />
+                                          <Label layoutX="205.0" layoutY="126.0" text="Surname:" />
+                                          <Label layoutX="205.0" layoutY="150.0" text="Number:" />
+                                          <Button fx:id="buttonCreateStudent" layoutX="204.0" layoutY="214.0" mnemonicParsing="false" onAction="#CreateStudent" text="Create Student" />
+                                          <Button fx:id="buttonAlterStudent" layoutX="398.0" layoutY="214.0" mnemonicParsing="false" onAction="#AlterStudent" text="Alter Student" />
+                                          <Label fx:id="labelCreateStudent" layoutX="56.0" layoutY="293.0" prefHeight="16.0" prefWidth="460.0" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
                               </Tab>
                           </tabs>
                         </TabPane>
@@ -179,6 +229,79 @@
                           </tabs>
                         </TabPane>
                      </children></AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="tab121" closable="false">
+               <graphic>
+                  <Group>
+                     <children>
+                        <Label rotate="90" text="Professors" />
+                     </children>
+                  </Group>
+               </graphic>
+               <content>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <TabPane prefHeight="458.0" prefWidth="664.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab text="Professors">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TableView fx:id="tableProfessors" layoutX="34.0" layoutY="42.0" prefHeight="200.0" prefWidth="575.0">
+                                             <columns>
+                                                <TableColumn fx:id="columnProfessorName" prefWidth="75.0" text="Name" />
+                                                <TableColumn fx:id="columnProfessorSurname" prefWidth="75.0" text="Surname" />
+                                                <TableColumn fx:id="columnProfessorID" prefWidth="95.0" text="ID" />
+                                                <TableColumn fx:id="columnProfessorAge" prefWidth="45.0" text="Age" />
+                                                <TableColumn fx:id="columnProfessorMail" prefWidth="143.0" text="Mail" />
+                                                <TableColumn fx:id="columnProfessorGender" prefWidth="77.0" text="Gender" />
+                                                <TableColumn fx:id="columnProfessorAdminStatus" prefWidth="64.0" text="Admin" />
+                                             </columns>
+                                          </TableView>
+                                          <Button layoutX="512.0" layoutY="294.0" mnemonicParsing="false" text="Make Admin" />
+                                          <Button layoutX="513.0" layoutY="262.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="98.0" text="Delete" />
+                                          <Button layoutX="164.0" layoutY="345.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="159.0" text="Insert to a Lesson" />
+                                          <TextField layoutX="151.0" layoutY="262.0" />
+                                          <Label layoutX="34.0" layoutY="266.0" text="Lesson Code:" />
+                                          <Label layoutY="369.0" prefHeight="16.0" prefWidth="664.0" textAlignment="CENTER" />
+                                          <Button layoutX="164.0" layoutY="306.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="158.0" text="Remove from Lesson" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                            <Tab text="Professor Lessons">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                              </content>
+                            </Tab>
+                              <Tab text="Professor Management">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TextField fx:id="tfNewProfessorSurname" layoutX="333.0" layoutY="90.0" />
+                                          <TextField fx:id="tfNewProfessorName" layoutX="333.0" layoutY="66.0" />
+                                          <TextField fx:id="tfNewProfessorID" layoutX="333.0" layoutY="114.0" />
+                                          <TextField fx:id="tfNewProfessorAge" layoutX="333.0" layoutY="138.0" />
+                                          <TextField fx:id="tfNewProfessorEmail" layoutX="333.0" layoutY="162.0" />
+                                          <TextField fx:id="tfNewProfessorGender" layoutX="333.0" layoutY="186.0" />
+                                          <Label layoutX="234.0" layoutY="70.0" text="Name:" />
+                                          <Label layoutX="234.0" layoutY="94.0" text="Surname:" />
+                                          <Label layoutX="234.0" layoutY="118.0" text="ID:" />
+                                          <Label layoutX="234.0" layoutY="142.0" text="Age:" />
+                                          <Label layoutX="234.0" layoutY="166.0" text="Email" />
+                                          <Label layoutX="234.0" layoutY="190.0" text="Gender" />
+                                          <Button fx:id="buttonCreateNewProfessor" layoutX="173.0" layoutY="256.0" mnemonicParsing="false" onAction="#CreateProfessor" text="Create New Professor" />
+                                          <Button fx:id="buttonAlterProfessor" layoutX="390.0" layoutY="256.0" mnemonicParsing="false" onAction="#AlterProfessor" text="Alter Professor" />
+                                          <Label fx:id="labelCreateProfessor" layoutX="148.0" layoutY="333.0" prefHeight="16.0" prefWidth="363.0" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                          </tabs>
+                        </TabPane>
+                     </children>
+                  </AnchorPane>
                </content>
             </Tab>
         </tabs>

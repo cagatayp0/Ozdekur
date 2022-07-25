@@ -50,6 +50,19 @@ public class StudentManager {
 		connection.close();
 		return affected == 1;
 	}
+	
+	public boolean alter(String Number, Student student) throws ClassNotFoundException, SQLException {
+		int affected;
+		Connection connection = DatabaseUtilities.getConnection();
+		String sql = "update students set Name = ?, Surname = ?, Number = ? where Number = ?";
+		PreparedStatement statement = connection.prepareCall(sql);
+		statement.setString(1, student.getName());
+		statement.setString(2, student.getSurname());
+		statement.setString(3, student.getStudentNumber());
+		statement.setString(4, Number);
+		affected = statement.executeUpdate();
+		return affected >= 1;
+	}
 
 	public ObservableList<Student> list() throws ClassNotFoundException, SQLException {
 		ObservableList<Student> studentList = FXCollections.observableArrayList();

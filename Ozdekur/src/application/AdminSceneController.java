@@ -28,6 +28,12 @@ public class AdminSceneController implements Initializable {
 	@FXML
 	private Label labelStudentAlreadyInLesson;
 	@FXML
+	private Label labelCreateLesson;
+	@FXML
+	private Label labelCreateStudent;
+	@FXML
+	private Label labelCreateProfessor;
+	@FXML
 	private Text textWelcome;
 	@FXML
 	private Text textLoggedInAs;
@@ -46,11 +52,43 @@ public class AdminSceneController implements Initializable {
 	@FXML
 	private Button buttonDeleteExam;
 	@FXML
+	private Button buttonDeleteLesson;
+	@FXML
+	private Button buttonCreateNewLesson;
+	@FXML
+	private Button buttonDeleteStudent;
+	@FXML
+	private Button buttonCreateStudent;
+	@FXML
+	private Button buttonAlterStudent;
+	@FXML
 	private TextField tfExamLessonName;
 	@FXML
 	private TextField tfStudentInsertLesson;
 	@FXML
 	private TextField tfChangeExamResults;
+	@FXML
+	private TextField tfNewLessonName;
+	@FXML
+	private TextField tfNewLessonCode;
+	@FXML
+	private TextField tfNewStudentName;
+	@FXML
+	private TextField tfNewStudentSurname;
+	@FXML
+	private TextField tfNewStudentNumber;
+	@FXML
+	private TextField tfNewProfessorName;
+	@FXML
+	private TextField tfNewProfessorSurname;
+	@FXML
+	private TextField tfNewProfessorID;
+	@FXML
+	private TextField tfNewProfessorAge;
+	@FXML
+	private TextField tfNewProfessorEmail;
+	@FXML
+	private TextField tfNewProfessorGender;
 	@FXML
 	private DatePicker dpExamDate;
 	@FXML
@@ -95,16 +133,147 @@ public class AdminSceneController implements Initializable {
 	private TableColumn<Student, Date> columnIndividualDate;
 	@FXML
 	private TableColumn<Student, Double> columnIndividualNote;
+	@FXML
+	private TableView<Lesson> tableMyLessons;
+	@FXML
+	private TableColumn<Lesson, String> columnMyLessonName;
+	@FXML
+	private TableColumn<Lesson, String> columnMyLessonCode;
+	@FXML
+	private TableView<Professor> tableProfessors;
+	@FXML
+	private TableColumn<Professor, String> columnProfessorName;
+	@FXML
+	private TableColumn<Professor, String> columnProfessorSurname;
+	@FXML
+	private TableColumn<Professor, String> columnProfessorID;
+	@FXML
+	private TableColumn<Professor, Integer> columnProfessorAge;
+	@FXML
+	private TableColumn<Professor, String> columnProfessorMail;
+	@FXML
+	private TableColumn<Professor, String> columnProfessorGender;
+	@FXML
+	private TableColumn<Professor, Integer> columnProfessorAdminStatus;
 
 	DataSingleton data = DataSingleton.getInstance();
 
 	StudentManager sm = new StudentManager();
 	ProfessorManager pm = new ProfessorManager();
 	ExamManager em = new ExamManager();
+	LessonManager lm = new LessonManager();
 
 	public void Logout() throws IOException {
 		Main m = new Main();
 		m.changeScene("LoginScene.fxml");
+	}
+	
+	public void DeleteLesson() throws ClassNotFoundException, SQLException {
+		Lesson lesson = tableLessons.getSelectionModel().getSelectedItem();
+		if (lesson != null) {
+			lm.delete(lesson.getLessonCode());
+			tableLessons.getItems().clear();
+			ObservableList<Lesson> oListLesson = lm.list();
+			tableLessons.setItems(oListLesson);
+		}
+	}
+	
+	public void CreateNewLesson() throws ClassNotFoundException, SQLException {
+		Lesson lesson = new Lesson();
+		lesson.setLessonCode(tfNewLessonCode.getText().toString());
+		lesson.setLessonName(tfNewLessonName.getText().toString());
+		if (lesson.getLessonCode().length() < 7) {
+			if (lm.exists(lesson) == false) {
+				lm.insert(lesson);
+				tableLessons.getItems().clear();
+				ObservableList<Lesson> oListLesson = lm.list();
+				tableLessons.setItems(oListLesson);
+			} else {
+				labelCreateLesson.setTextFill(Color.RED);
+				labelCreateLesson.setText("Lesson already exists!");
+			}
+		} else {
+			labelCreateLesson.setTextFill(Color.RED);
+			labelCreateLesson.setText("Lesson code should have 6 digits!");
+		}
+	}
+	
+	public void DeleteStudent() throws ClassNotFoundException, SQLException {
+		String[] parts = textLoggedInAs.getText().toString().split(": ");
+		String profMail = parts[1];
+		
+		Student student = tableStudents.getSelectionModel().getSelectedItem();
+		sm.delete(student.getStudentNumber());
+		
+		tableStudents.getItems().clear();
+		ObservableList<Student> studentList = sm.list();
+		tableStudents.setItems(studentList);
+		
+		tableMyStudents.getItems().clear();
+		ObservableList<Student> myStudentList = pm.getStudents(profMail);
+		tableMyStudents.setItems(myStudentList);
+	}
+	
+	public void CreateStudent() throws ClassNotFoundException, SQLException {
+		String[] parts = textLoggedInAs.getText().toString().split(": ");
+		String profMail = parts[1];
+		Student student = new Student();
+		student.setName(tfNewStudentName.getText().toString());
+		student.setSurname(tfNewStudentSurname.getText().toString());
+		student.setStudentNumber(tfNewStudentNumber.getText().toString());
+		
+		if (sm.find(student.getStudentNumber()) == null) {
+			if (student.checkStudentNumber(student.getStudentNumber()) == true) {
+				sm.insert(student);
+				labelCreateStudent.setText("Student was created");
+				labelCreateStudent.setTextFill(Color.GREEN);
+			} else {
+				labelCreateStudent.setText("Student number must have 9 digits!");
+				labelCreateStudent.setTextFill(Color.RED);
+			}
+		} else {
+			labelCreateStudent.setText("Student already exists!");
+			labelCreateStudent.setTextFill(Color.RED);
+		}
+		
+		tableStudents.getItems().clear();
+		ObservableList<Student> studentList = sm.list();
+		tableStudents.setItems(studentList);
+		
+		tableMyStudents.getItems().clear();
+		ObservableList<Student> myStudentList = pm.getStudents(profMail);
+		tableMyStudents.setItems(myStudentList);
+	}
+	
+	public void AlterStudent() throws ClassNotFoundException, SQLException {
+		String[] parts = textLoggedInAs.getText().toString().split(": ");
+		String profMail = parts[1];
+		Student student = new Student();
+		student.setName(tfNewStudentName.getText().toString());
+		student.setSurname(tfNewStudentSurname.getText().toString());
+		student.setStudentNumber(tfNewStudentNumber.getText().toString());
+		
+		if (sm.find(student.getStudentNumber()) != null) {
+			if (student.checkStudentNumber(student.getStudentNumber()) == true) {
+				sm.alter(student.getStudentNumber(), student);
+				labelCreateStudent.setText("Student was updated");
+				labelCreateStudent.setTextFill(Color.GREEN);
+			} else {
+				labelCreateStudent.setText("Student number must have 9 digits!");
+				labelCreateStudent.setTextFill(Color.RED);
+			}
+		} else {
+			labelCreateStudent.setText("Student doesn't exist!");
+			labelCreateStudent.setTextFill(Color.RED);
+		}
+		
+		tableStudents.getItems().clear();
+		ObservableList<Student> studentList = sm.list();
+		tableStudents.setItems(studentList);
+		
+		tableMyStudents.getItems().clear();
+		ObservableList<Student> myStudentList = pm.getStudents(profMail);
+		tableMyStudents.setItems(myStudentList);
 	}
 
 	public void CreateNewExam() throws ClassNotFoundException, SQLException {
@@ -186,6 +355,60 @@ public class AdminSceneController implements Initializable {
 		ObservableList<Student> oListStudResults = pm.listStudentResults(profMail);
 		tableIndividualExams.setItems(oListStudResults);
 	}
+	
+	public void CreateProfessor() throws ClassNotFoundException, SQLException {
+		Professor professor = new Professor();
+		professor.setName(tfNewProfessorName.getText().toString());
+		professor.setSurname(tfNewProfessorSurname.getText().toString());
+		professor.setAge(Integer.parseInt(tfNewProfessorAge.getText().toString()));
+		professor.setEmail(tfNewProfessorEmail.getText().toString());
+		professor.setGender(tfNewProfessorGender.getText().toString());
+		professor.setId(tfNewProfessorID.getText().toString());
+		professor.setIsAdmin(0);
+		if (professor.checkId(professor.getId())) {
+			if (professor.getGender().toLowerCase().equals("male") || professor.getGender().toLowerCase().equals("female")) {
+				pm.insert(professor);
+				labelCreateProfessor.setText("Professor has created!");
+				labelCreateProfessor.setTextFill(Color.GREEN);
+			} else {
+				labelCreateProfessor.setText("Please enter a valid gender!");
+				labelCreateProfessor.setTextFill(Color.RED);
+			}
+		} else {
+			labelCreateProfessor.setText("ID should have 11 digits!");
+			labelCreateProfessor.setTextFill(Color.RED);
+		}
+
+	}
+	
+	public void AlterProfessor() throws ClassNotFoundException, SQLException {
+		Professor professor = new Professor();
+		professor.setName(tfNewProfessorName.getText().toString());
+		professor.setSurname(tfNewProfessorSurname.getText().toString());
+		professor.setAge(Integer.parseInt(tfNewProfessorAge.getText().toString()));
+		professor.setEmail(tfNewProfessorEmail.getText().toString());
+		professor.setGender(tfNewProfessorGender.getText().toString());
+		professor.setId(tfNewProfessorID.getText().toString());
+		professor.setIsAdmin(0);
+		if (pm.find(professor.getEmail()) != null) {
+			if (professor.checkId(professor.getId())) {
+				if (professor.getGender().toLowerCase().equals("male") || professor.getGender().toLowerCase().equals("female")) {
+					//pm.insert(professor);
+					labelCreateProfessor.setText("Professor informations are updated!");
+					labelCreateProfessor.setTextFill(Color.GREEN);
+				} else {
+					labelCreateProfessor.setText("Please enter a valid gender!");
+					labelCreateProfessor.setTextFill(Color.RED);
+				}
+			} else {
+				labelCreateProfessor.setText("ID should have 11 digits!");
+				labelCreateProfessor.setTextFill(Color.RED);
+			}
+		} else {
+			labelCreateProfessor.setText("This professor doesn't exist!");
+			labelCreateProfessor.setTextFill(Color.RED);
+		}
+	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -195,10 +418,12 @@ public class AdminSceneController implements Initializable {
 
 		try {
 			ObservableList<Student> oListStudent = sm.list();
-			ObservableList<Lesson> oListLesson = pm.getLessons(profMail);
+			ObservableList<Lesson> oListLesson = lm.list();
 			ObservableList<Exam> oListExam = pm.getExams(profMail);
 			ObservableList<Student> oListMyStudent = pm.getStudents(profMail);
 			ObservableList<Student> oListStudResults = pm.listStudentResults(profMail);
+			ObservableList<Lesson> oListMyLesson = pm.getLessons(profMail);
+			ObservableList<Professor> oListProfessors = pm.list();
 
 			columnStudentName.setCellValueFactory(new PropertyValueFactory<Student, String>("Name"));
 			columnStudentSurname.setCellValueFactory(new PropertyValueFactory<Student, String>("Surname"));
@@ -224,6 +449,19 @@ public class AdminSceneController implements Initializable {
 			columnIndividualLesson.setCellValueFactory(new PropertyValueFactory<Student, String>("TempLesson"));
 			columnIndividualNote.setCellValueFactory(new PropertyValueFactory<Student, Double>("TotalNote"));
 			tableIndividualExams.setItems(oListStudResults);
+			
+			columnMyLessonName.setCellValueFactory(new PropertyValueFactory<Lesson, String>("LessonName"));
+			columnMyLessonCode.setCellValueFactory(new PropertyValueFactory<Lesson, String>("LessonCode"));
+			tableMyLessons.setItems(oListMyLesson);
+			
+			columnProfessorName.setCellValueFactory(new PropertyValueFactory<Professor, String>("Name"));
+			columnProfessorSurname.setCellValueFactory(new PropertyValueFactory<Professor, String>("Surname"));
+			columnProfessorMail.setCellValueFactory(new PropertyValueFactory<Professor, String>("Email"));
+			columnProfessorID.setCellValueFactory(new PropertyValueFactory<Professor, String>("Id"));
+			columnProfessorGender.setCellValueFactory(new PropertyValueFactory<Professor, String>("Gender"));
+			columnProfessorAge.setCellValueFactory(new PropertyValueFactory<Professor, Integer>("Age"));
+			columnProfessorAdminStatus.setCellValueFactory(new PropertyValueFactory<Professor, Integer>("IsAdmin"));
+			tableProfessors.setItems(oListProfessors);
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
