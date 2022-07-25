@@ -261,5 +261,37 @@ public class ProfessorManager {
 		connection.close();
 		return studLessonList;
 	}
+	
+	public boolean makeAdmin(Professor p) throws ClassNotFoundException, SQLException {
+		Connection connection = DatabaseUtilities.getConnection();
+		String sql = "update professors set IsAdmin = 1 where ID = ?";
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setString(1, p.getId());
+		int affected = statement.executeUpdate();
+		connection.close();
+		return affected >= 1;
+	}
+	
+	public boolean insertToLesson(Professor p, String LessonCode) throws ClassNotFoundException, SQLException {
+		Connection connection = DatabaseUtilities.getConnection();
+		String sql = "insert into professor_lessons values (?, ?)";
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setString(1, LessonCode);
+		statement.setString(2, p.getEmail());
+		int affected = statement.executeUpdate();
+		connection.close();
+		return affected >= 1;
+	}
+	
+	public boolean removeFromLesson(Professor p, String LessonCode) throws SQLException, ClassNotFoundException {
+		Connection connection = DatabaseUtilities.getConnection();
+		String sql = "delete from professor_lessons where Code = ? and Email = ?";
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setString(1, LessonCode);
+		statement.setString(2, p.getEmail());
+		int affected = statement.executeUpdate();
+		connection.close();
+		return affected >= 1;
+	}
 
 }

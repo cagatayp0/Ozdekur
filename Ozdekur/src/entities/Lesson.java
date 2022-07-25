@@ -6,6 +6,9 @@ public class Lesson {
 	
 	private String LessonName;
 	private String LessonCode;
+	private String TempProfessorName;
+	private String TempProfessorSurname;
+	private String TempProfessorEmail;
 	private Professor prof;
 	private List<Student> studentList;
 	private List<Exam> examList;
@@ -57,6 +60,30 @@ public class Lesson {
 
 	public void setExamList(List<Exam> examList) {
 		this.examList = examList;
+	}
+
+	public String getTempProfessorName() {
+		return TempProfessorName;
+	}
+
+	public void setTempProfessorName(String tempProfessorName) {
+		TempProfessorName = tempProfessorName;
+	}
+
+	public String getTempProfessorEmail() {
+		return TempProfessorEmail;
+	}
+
+	public void setTempProfessorEmail(String tempProfessorEmail) {
+		TempProfessorEmail = tempProfessorEmail;
+	}
+
+	public String getTempProfessorSurname() {
+		return TempProfessorSurname;
+	}
+
+	public void setTempProfessorSurname(String tempProfessorSurname) {
+		TempProfessorSurname = tempProfessorSurname;
 	}
 	
 }

@@ -34,6 +34,8 @@ public class AdminSceneController implements Initializable {
 	@FXML
 	private Label labelCreateProfessor;
 	@FXML
+	private Label labelProfessorOps;
+	@FXML
 	private Text textWelcome;
 	@FXML
 	private Text textLoggedInAs;
@@ -62,6 +64,14 @@ public class AdminSceneController implements Initializable {
 	@FXML
 	private Button buttonAlterStudent;
 	@FXML
+	private Button buttonRemoveProfFromLesson;
+	@FXML
+	private Button buttonInsertProfToLesson;
+	@FXML
+	private Button buttonDeleteProfessor;
+	@FXML
+	private Button buttonMakeAdmin;
+	@FXML
 	private TextField tfExamLessonName;
 	@FXML
 	private TextField tfStudentInsertLesson;
@@ -89,6 +99,8 @@ public class AdminSceneController implements Initializable {
 	private TextField tfNewProfessorEmail;
 	@FXML
 	private TextField tfNewProfessorGender;
+	@FXML
+	private TextField tfPopLessonCode;
 	@FXML
 	private DatePicker dpExamDate;
 	@FXML
@@ -155,6 +167,18 @@ public class AdminSceneController implements Initializable {
 	private TableColumn<Professor, String> columnProfessorGender;
 	@FXML
 	private TableColumn<Professor, Integer> columnProfessorAdminStatus;
+	@FXML
+	private TableView<Lesson> tableProfessorLessons;
+	@FXML
+	private TableColumn<Lesson, String> columnPLName;
+	@FXML
+	private TableColumn<Lesson, String> columnPLSurname;
+	@FXML
+	private TableColumn<Lesson, String> columnPLEmail;
+	@FXML
+	private TableColumn<Lesson, String> columnPLCode;
+	@FXML
+	private TableColumn<Lesson, String> columnPLLName;
 
 	DataSingleton data = DataSingleton.getInstance();
 
@@ -175,6 +199,9 @@ public class AdminSceneController implements Initializable {
 			tableLessons.getItems().clear();
 			ObservableList<Lesson> oListLesson = lm.list();
 			tableLessons.setItems(oListLesson);
+			tableProfessorLessons.getItems().clear();
+			ObservableList<Lesson> llist = lm.listProfessorLessons();
+			tableProfessorLessons.setItems(llist);
 		}
 	}
 
@@ -188,6 +215,9 @@ public class AdminSceneController implements Initializable {
 				tableLessons.getItems().clear();
 				ObservableList<Lesson> oListLesson = lm.list();
 				tableLessons.setItems(oListLesson);
+				tableProfessorLessons.getItems().clear();
+				ObservableList<Lesson> llist = lm.listProfessorLessons();
+				tableProfessorLessons.setItems(llist);
 			} else {
 				labelCreateLesson.setTextFill(Color.RED);
 				labelCreateLesson.setText("Lesson already exists!");
@@ -302,7 +332,6 @@ public class AdminSceneController implements Initializable {
 		String ExamName = exam.getLessonCode();
 		Date sqlDate = exam.getDate();
 		em.delete(ExamName, sqlDate);
-		tableExams.refresh();
 		tableExams.getItems().clear();
 		ObservableList<Exam> oListExam = pm.getExams(profMail);
 		tableExams.setItems(oListExam);
@@ -356,6 +385,95 @@ public class AdminSceneController implements Initializable {
 		ObservableList<Student> oListStudResults = pm.listStudentResults(profMail);
 		tableIndividualExams.setItems(oListStudResults);
 	}
+	
+	public void DeleteProfessor() throws ClassNotFoundException, SQLException {
+		Professor professor = tableProfessors.getSelectionModel().getSelectedItem();
+		if (professor != null) {
+			pm.delete(professor.getId());
+			labelProfessorOps.setText("Deleted");
+			labelProfessorOps.setTextFill(Color.GREEN);
+			tableProfessors.getItems().clear();
+			ObservableList<Professor> plist = pm.list();
+			tableProfessors.setItems(plist);
+			tableProfessorLessons.getItems().clear();
+			ObservableList<Lesson> llist = lm.listProfessorLessons();
+			tableProfessorLessons.setItems(llist);
+		}
+	}
+	
+	public void MakeAdmin() throws ClassNotFoundException, SQLException {
+		Professor professor = tableProfessors.getSelectionModel().getSelectedItem();
+		if (professor != null) {
+			pm.makeAdmin(professor);
+			labelProfessorOps.setText("Professor " + professor.getSurname() + " is now an admin");
+			labelProfessorOps.setTextFill(Color.GREEN);
+			tableProfessors.getItems().clear();
+			ObservableList<Professor> plist = pm.list();
+			tableProfessors.setItems(plist);
+		}
+	}
+	
+	public void RemoveProfFromLesson() {
+		String[] parts = textLoggedInAs.getText().toString().split(": ");
+		String profMail = parts[1];
+		Professor professor = tableProfessors.getSelectionModel().getSelectedItem();
+		String LessonCode = tfPopLessonCode.getText().toString();
+		if (professor != null) {
+			try {
+				pm.removeFromLesson(professor, LessonCode);
+				labelProfessorOps.setText("Successfully removed professor " + professor.getSurname() + " from " + LessonCode);
+				labelProfessorOps.setTextFill(Color.GREEN);
+				tableProfessorLessons.getItems().clear();
+				ObservableList<Lesson> llist = lm.listProfessorLessons();
+				tableProfessorLessons.setItems(llist);
+				if (profMail.equals(professor.getEmail())) {
+					tableMyStudents.getItems().clear();
+					ObservableList<Student> oListMyStuds = pm.getStudents(profMail);
+					tableMyStudents.setItems(oListMyStuds);
+					tableExams.getItems().clear();
+					ObservableList<Exam> oListExam = pm.getExams(profMail);
+					tableExams.setItems(oListExam);
+					tableMyLessons.getItems().clear();
+					ObservableList<Lesson> oListMyLesson = pm.getLessons(profMail);
+					tableMyLessons.setItems(oListMyLesson);
+				}
+			} catch (Exception e) {
+				labelProfessorOps.setText("Professor " + professor.getSurname() + " don't teach " + LessonCode);
+				labelProfessorOps.setTextFill(Color.RED);
+			}
+		}
+	}
+	
+	public void InsertProfToLesson() {
+		String[] parts = textLoggedInAs.getText().toString().split(": ");
+		String profMail = parts[1];
+		Professor professor = tableProfessors.getSelectionModel().getSelectedItem();
+		String LessonCode = tfPopLessonCode.getText().toString();
+		if (professor != null) {
+			try {
+				pm.insertToLesson(professor, LessonCode);
+				labelProfessorOps.setText("Successfully inserted professor " + professor.getSurname() + " from " + LessonCode);
+				labelProfessorOps.setTextFill(Color.GREEN);
+				tableProfessorLessons.getItems().clear();
+				ObservableList<Lesson> llist = lm.listProfessorLessons();
+				tableProfessorLessons.setItems(llist);
+				if (profMail.equals(professor.getEmail())) {
+					tableMyStudents.getItems().clear();
+					ObservableList<Student> oListMyStuds = pm.getStudents(profMail);
+					tableMyStudents.setItems(oListMyStuds);
+					tableExams.getItems().clear();
+					ObservableList<Exam> oListExam = pm.getExams(profMail);
+					tableExams.setItems(oListExam);
+					tableMyLessons.getItems().clear();
+					ObservableList<Lesson> oListMyLesson = pm.getLessons(profMail);
+					tableMyLessons.setItems(oListMyLesson);
+				}
+			} catch (Exception e) {
+				labelProfessorOps.setText("Unable to insert Professor " + professor.getSurname() + " to " + LessonCode);
+				labelProfessorOps.setTextFill(Color.RED);
+			}
+		}
+	}
 
 	public void CreateProfessor() throws ClassNotFoundException, SQLException {
 		Professor professor = new Professor();
@@ -375,6 +493,9 @@ public class AdminSceneController implements Initializable {
 				tableProfessors.getItems().clear();
 				ObservableList<Professor> plist = pm.list();
 				tableProfessors.setItems(plist);
+				tableProfessorLessons.getItems().clear();
+				ObservableList<Lesson> llist = lm.listProfessorLessons();
+				tableProfessorLessons.setItems(llist);
 			} else {
 				labelCreateProfessor.setText("Please enter a valid gender!");
 				labelCreateProfessor.setTextFill(Color.RED);
@@ -383,7 +504,6 @@ public class AdminSceneController implements Initializable {
 			labelCreateProfessor.setText("ID should have 11 digits!");
 			labelCreateProfessor.setTextFill(Color.RED);
 		}
-
 	}
 
 	public void AlterProfessor() throws ClassNotFoundException, SQLException {
@@ -405,6 +525,9 @@ public class AdminSceneController implements Initializable {
 					tableProfessors.getItems().clear();
 					ObservableList<Professor> plist = pm.list();
 					tableProfessors.setItems(plist);
+					tableProfessorLessons.getItems().clear();
+					ObservableList<Lesson> llist = lm.listProfessorLessons();
+					tableProfessorLessons.setItems(llist);
 				} else {
 					labelCreateProfessor.setText("Please enter a valid gender!");
 					labelCreateProfessor.setTextFill(Color.RED);
@@ -433,6 +556,7 @@ public class AdminSceneController implements Initializable {
 			ObservableList<Student> oListStudResults = pm.listStudentResults(profMail);
 			ObservableList<Lesson> oListMyLesson = pm.getLessons(profMail);
 			ObservableList<Professor> oListProfessors = pm.list();
+			ObservableList<Lesson> oListProfLessons = lm.listProfessorLessons();
 
 			columnStudentName.setCellValueFactory(new PropertyValueFactory<Student, String>("Name"));
 			columnStudentSurname.setCellValueFactory(new PropertyValueFactory<Student, String>("Surname"));
@@ -471,6 +595,13 @@ public class AdminSceneController implements Initializable {
 			columnProfessorAge.setCellValueFactory(new PropertyValueFactory<Professor, Integer>("Age"));
 			columnProfessorAdminStatus.setCellValueFactory(new PropertyValueFactory<Professor, Integer>("IsAdmin"));
 			tableProfessors.setItems(oListProfessors);
+			
+			columnPLName.setCellValueFactory(new PropertyValueFactory<Lesson, String>("TempProfessorName"));
+			columnPLSurname.setCellValueFactory(new PropertyValueFactory<Lesson, String>("TempProfessorSurname"));
+			columnPLEmail.setCellValueFactory(new PropertyValueFactory<Lesson, String>("TempProfessorEmail"));
+			columnPLCode.setCellValueFactory(new PropertyValueFactory<Lesson, String>("LessonCode"));
+			columnPLLName.setCellValueFactory(new PropertyValueFactory<Lesson, String>("LessonName"));
+			tableProfessorLessons.setItems(oListProfLessons);
 
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();

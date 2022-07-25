@@ -66,4 +66,29 @@ public class LessonManager {
 		return exist;
 	}
 	
+	public ObservableList<Lesson> listProfessorLessons() throws ClassNotFoundException, SQLException {
+		ObservableList<Lesson> listProfLessons = FXCollections.observableArrayList();
+		Connection connection = DatabaseUtilities.getConnection();
+		String sql = "select professors.Name, professors.Surname, professors.Email, lessons.Name, lessons.Code from professors "
+				+ "inner join professor_lessons on professors.Email = professor_lessons.Email "
+				+ "inner join lessons on professor_lessons.Code = lessons.Code";
+		PreparedStatement statement = connection.prepareStatement(sql);
+		ResultSet resultset = statement.executeQuery();
+		while (resultset.next()) {
+			Lesson lesson = new Lesson();
+			Professor prof = new Professor();
+			prof.setName(resultset.getString(1));
+			prof.setSurname(resultset.getString(2));
+			prof.setEmail(resultset.getString(3));
+			lesson.setLessonName(resultset.getString(4));
+			lesson.setLessonCode(resultset.getString(5));
+			lesson.setTempProfessorEmail(prof.getEmail());
+			lesson.setTempProfessorSurname(prof.getSurname());
+			lesson.setTempProfessorName(prof.getName());
+			listProfLessons.add(lesson);
+		}
+		connection.close();
+		return listProfLessons;
+	}
+	
 }
