@@ -14,17 +14,17 @@ import javafx.collections.ObservableList;
 public class ProfessorManager {
 
 	public int checkAdminStatus(String email) throws ClassNotFoundException, SQLException {
+		int admin = 0;
 		Connection connection = DatabaseUtilities.getConnection();
 		String sql = "select IsAdmin from professors where Email=?";
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setString(1, email);
 		ResultSet resultset = statement.executeQuery();
 		while (resultset.next()) {
-			connection.close();
-			return resultset.getInt("IsAdmin");
+			admin = resultset.getInt("IsAdmin");
 		}
 		connection.close();
-		return 0;
+		return admin;
 	}
 
 	public boolean insert(Professor prof) throws ClassNotFoundException, SQLException {
@@ -82,7 +82,6 @@ public class ProfessorManager {
 		String sql = "select * from professors";
 		PreparedStatement statement = connection.prepareStatement(sql);
 		ResultSet resultset = statement.executeQuery();
-
 		while (resultset.next()) {
 			Professor prof = new Professor();
 			prof.setName(resultset.getString(1));
@@ -100,7 +99,8 @@ public class ProfessorManager {
 	
 	public boolean alter(Professor professor) throws SQLException, ClassNotFoundException {
 		Connection connection = DatabaseUtilities.getConnection();
-		String sql = "update professors set Name = ?, Surname = ?, ID = ?, Age = ?, Email = ?, Gender = ? "
+		String sql = "update professors "
+				+ "set Name = ?, Surname = ?, ID = ?, Age = ?, Email = ?, Gender = ? "
 				+ "where Email = ?";
 		PreparedStatement statement = connection.prepareCall(sql);
 		statement.setString(1, professor.getName());
@@ -116,6 +116,7 @@ public class ProfessorManager {
 	}
 
 	public boolean checkEmailInProfessors(String email) throws ClassNotFoundException, SQLException {
+		boolean check = false;
 		Connection connection = DatabaseUtilities.getConnection();
 		String sql = "select Email from professors";
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -123,15 +124,15 @@ public class ProfessorManager {
 
 		while (resultset.next()) {
 			if (email.equals(resultset.getString(1))) {
-				connection.close();
-				return true;
+				check = true;
 			}
 		}
 		connection.close();
-		return false;
+		return check;
 	}
 
 	public boolean checkEmailInCredentials(String email) throws ClassNotFoundException, SQLException {
+		boolean check = false;
 		Connection connection = DatabaseUtilities.getConnection();
 		String sql = "select Email from credentials";
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -139,12 +140,11 @@ public class ProfessorManager {
 
 		while (resultset.next()) {
 			if (email.equals(resultset.getString(1))) {
-				connection.close();
-				return true;
+				check = true;
 			}
 		}
 		connection.close();
-		return false;
+		return check;
 	}
 
 	public boolean createProfessorAccount(String email, String password) throws ClassNotFoundException, SQLException {
@@ -167,7 +167,6 @@ public class ProfessorManager {
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setString(1, ProfEmail);
 		ResultSet resultset = statement.executeQuery();
-
 		while (resultset.next()) {
 			Lesson lesson = new Lesson();
 			lesson.setLessonCode(resultset.getString(1));
@@ -188,7 +187,6 @@ public class ProfessorManager {
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setString(1, ProfEmail);
 		ResultSet resultset = statement.executeQuery();
-
 		while (resultset.next()) {
 			Student student = new Student();
 			student.setName(resultset.getString(1));
@@ -211,7 +209,6 @@ public class ProfessorManager {
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setString(1, ProfEmail);
 		ResultSet resultset = statement.executeQuery();
-
 		while (resultset.next()) {
 			Exam exam = new Exam();
 			Lesson lesson = new Lesson();
@@ -228,21 +225,20 @@ public class ProfessorManager {
 	}
 
 	public boolean checkLessons(String Code, String Email) throws ClassNotFoundException, SQLException {
+		boolean check = false;
 		Connection connection = DatabaseUtilities.getConnection();
 		String sql = "select Code from professor_lessons where Email = ?";
 		PreparedStatement statement = connection.prepareStatement(sql);
 		statement.setString(1, Email);
 		ResultSet resultset = statement.executeQuery();
-
 		while (resultset.next()) {
 			if (Code.equals(resultset.getString(1))) {
-				connection.close();
-				return true;
+				check = true;
 			}
 
 		}
 		connection.close();
-		return false;
+		return check;
 	}
 	
 	public ObservableList<Student> listStudentResults(String ProfMail) throws ClassNotFoundException, SQLException {

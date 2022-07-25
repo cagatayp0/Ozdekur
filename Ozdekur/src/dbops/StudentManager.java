@@ -61,6 +61,7 @@ public class StudentManager {
 		statement.setString(3, student.getStudentNumber());
 		statement.setString(4, Number);
 		affected = statement.executeUpdate();
+		connection.close();
 		return affected >= 1;
 	}
 
@@ -106,6 +107,7 @@ public class StudentManager {
 	}
 	
 	public boolean checkStudentInLesson(String StudentNumber, String LessonCode) throws ClassNotFoundException, SQLException {
+		boolean check = false;
 		Connection connection = DatabaseUtilities.getConnection();
 		String sql = "select * from student_lessons where Number = ? and Code = ?";
 		PreparedStatement statement = connection.prepareStatement(sql);
@@ -118,10 +120,11 @@ public class StudentManager {
 			student.setStudentNumber(resultset.getString(1));
 			student.setTempLesson(resultset.getString(2));
 			if (student.getStudentNumber().equals(StudentNumber) && student.getTempLesson().equals(LessonCode)) {
-				return true;
+				check = true;
 			}
 		}
-		return false;
+		connection.close();
+		return check;
 	}
 	
 	public boolean changeStudentNotes(Double NewResult, String StudentNumber) throws ClassNotFoundException, SQLException {
@@ -131,6 +134,7 @@ public class StudentManager {
 		statement.setDouble(1, NewResult);
 		statement.setString(2, StudentNumber);
 		int affected = statement.executeUpdate();
+		connection.close();
 		return affected >= 1;
 	}
 

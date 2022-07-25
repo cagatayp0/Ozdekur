@@ -52,17 +52,18 @@ public class LessonManager {
 	}
 	
 	public boolean exists(Lesson lesson) throws ClassNotFoundException, SQLException {
+		boolean exist = false;
 		Connection connection = DatabaseUtilities.getConnection();
 		String sql = "select * from lessons";
 		PreparedStatement statement = connection.prepareStatement(sql);
 		ResultSet resultset = statement.executeQuery();
 		while (resultset.next()) {
 				if (lesson.getLessonName().equals(resultset.getString(2)) && lesson.getLessonCode().equals(resultset.getString(1))) {
-					return true;
+					exist = true;
 			}
 		}
 		connection.close();
-		return false;
+		return exist;
 	}
 	
 }

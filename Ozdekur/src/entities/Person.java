@@ -24,7 +24,7 @@ abstract public class Person {
     
     public boolean checkId(String s) {
         for (Character c : s.toCharArray()) {
-            if (Character.isDigit(c) && s.length()==11) {
+            if (Character.isDigit(c) && s.length() == 11) {
                 return true;
             }
         }

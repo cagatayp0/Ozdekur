@@ -15,6 +15,7 @@ public class ExamManager {
 		statement.setString(1, Code);
 		statement.setDate(2, Date);
 		affected = statement.executeUpdate();
+		connection.close();
 		return affected >= 1;
 	}
 	
@@ -26,6 +27,7 @@ public class ExamManager {
 		statement.setString(1, Code);
 		statement.setDate(2, Date);
 		affected = statement.executeUpdate();
+		connection.close();
 		return affected >= 1;
 	}
 	
