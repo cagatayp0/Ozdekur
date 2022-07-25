@@ -61,6 +61,6 @@ public class Exam {
 
 	public void setLessonCode(String lessonCode) {
 		LessonCode = lessonCode;
-	}	
+	}
 	
 }

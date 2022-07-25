@@ -1,5 +1,6 @@
 package entities;
 
+import java.sql.Date;
 import java.util.List;
 
 public class Student extends Person {
@@ -7,6 +8,8 @@ public class Student extends Person {
     private String StudentNumber;
     private Double TotalNote;
     private List<Lesson> lessonList;
+    private String TempLesson;
+    private Date TempExamDate;
 
     public Student(String Name, String Surname, String Id, String Email, int Age, String Gender, String StudentNumber) {
         super(Name, Surname, Id, Email, Age, Gender);
@@ -117,5 +120,21 @@ public class Student extends Person {
 
 	public void setLessonList(List<Lesson> lessonList) {
 		this.lessonList = lessonList;
+	}
+
+	public String getTempLesson() {
+		return TempLesson;
+	}
+
+	public void setTempLesson(String tempLesson) {
+		TempLesson = tempLesson;
+	}
+
+	public Date getTempExamDate() {
+		return TempExamDate;
+	}
+
+	public void setTempExamDate(Date tempExamDate) {
+		TempExamDate = tempExamDate;
 	}
 }

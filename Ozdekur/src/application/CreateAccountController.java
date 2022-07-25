@@ -1,6 +1,5 @@
 package application;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,7 +29,7 @@ public class CreateAccountController {
 	private PasswordField tfPassword;
 	@FXML
 	private PasswordField tfPassword2;
-	
+
 	public void createAccount() throws ClassNotFoundException, SQLException {
 		ProfessorManager m = new ProfessorManager();
 		String email = tfEmail.getText().toString();
@@ -55,17 +54,17 @@ public class CreateAccountController {
 			labelWrongCredentials.setText("Account doesn't exist!");
 		}
 	}
-	
-	public void goBack(ActionEvent e) throws IOException {
+
+	public void goBack() throws IOException {
 		Main m = new Main();
 		m.changeScene("LoginScene.fxml");
 	}
-	
+
 	private boolean checkPasswords(String p1, String p2) {
 		if (p1.equals(p2)) {
 			return true;
 		}
 		return false;
 	}
-		
+
 }

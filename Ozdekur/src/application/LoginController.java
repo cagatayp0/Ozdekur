@@ -48,7 +48,7 @@ public class LoginController {
 		//checkLogin("MainScene.fxml");
 		ProfessorManager m = new ProfessorManager();
 		if (m.checkAdminStatus(tfUsername.getText().toString()) == 1) {
-			checkLogin("AdminScene.fxml");
+			openAdminScene(e);
 		} else {
 			openMainScene(e);
 		}
@@ -80,6 +80,13 @@ public class LoginController {
 	private void openMainScene(ActionEvent event) throws IOException {
 		data.setEmail(tfUsername.getText().toString());
 		AnchorPane mainPane = FXMLLoader.load(getClass().getResource("MainScene.fxml"));
+		loginPane.getChildren().removeAll();
+		loginPane.getChildren().setAll(mainPane);
+	}
+	
+	private void openAdminScene(ActionEvent event) throws IOException {
+		data.setEmail(tfUsername.getText().toString());
+		AnchorPane mainPane = FXMLLoader.load(getClass().getResource("AdminScene.fxml"));
 		loginPane.getChildren().removeAll();
 		loginPane.getChildren().setAll(mainPane);
 	}

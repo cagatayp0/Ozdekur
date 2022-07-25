@@ -21,7 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextField;
 
-public class MainSceneController implements Initializable {
+public class AdminSceneController implements Initializable {
 
 	@FXML
 	private Label labelWrongExam;
