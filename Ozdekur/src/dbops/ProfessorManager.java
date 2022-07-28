@@ -158,6 +158,18 @@ public class ProfessorManager {
 		connection.close();
 		return affected >= 1;
 	}
+	
+	public boolean changePassword(String email, String password) throws ClassNotFoundException, SQLException {
+		int affected;
+		Connection connection = DatabaseUtilities.getConnection();
+		String sql = "update credentials set Email = ?, Password = ?";
+		PreparedStatement statement = connection.prepareStatement(sql);
+		statement.setString(1, email);
+		statement.setString(2, password);
+		affected = statement.executeUpdate();
+		connection.close();
+		return affected >= 1;
+	}
 
 	public ObservableList<Lesson> getLessons(String ProfEmail) throws ClassNotFoundException, SQLException {
 		ObservableList<Lesson> lessonList = FXCollections.observableArrayList();

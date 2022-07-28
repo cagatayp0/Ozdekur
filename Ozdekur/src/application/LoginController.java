@@ -32,6 +32,8 @@ public class LoginController {
 	@FXML
 	private Button buttonLoginAdmin;
 	@FXML
+	private Button buttonForgotPassword;
+	@FXML
 	private Label labelWrongPassword;
 	@FXML
 	private TextField tfUsername;
@@ -52,6 +54,11 @@ public class LoginController {
 		} else {
 			openMainScene(e);
 		}
+	}
+	
+	public void openForgotPasswordScene() throws IOException {
+		Main m = new Main();
+		m.changeScene("ForgotPasswordScene.fxml");
 	}
 	
 	public void createAccount(ActionEvent e) throws IOException, SQLException, ClassNotFoundException {

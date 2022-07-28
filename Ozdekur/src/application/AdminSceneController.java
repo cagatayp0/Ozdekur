@@ -209,7 +209,7 @@ public class AdminSceneController implements Initializable {
 		Lesson lesson = new Lesson();
 		lesson.setLessonCode(tfNewLessonCode.getText().toString());
 		lesson.setLessonName(tfNewLessonName.getText().toString());
-		if (lesson.getLessonCode().length() < 7) {
+		if (lesson.getLessonCode().length() == 6) {
 			if (lm.exists(lesson) == false) {
 				lm.insert(lesson);
 				tableLessons.getItems().clear();
@@ -218,6 +218,8 @@ public class AdminSceneController implements Initializable {
 				tableProfessorLessons.getItems().clear();
 				ObservableList<Lesson> llist = lm.listProfessorLessons();
 				tableProfessorLessons.setItems(llist);
+				labelCreateLesson.setTextFill(Color.GREEN);
+				labelCreateLesson.setText("Lesson created!");
 			} else {
 				labelCreateLesson.setTextFill(Color.RED);
 				labelCreateLesson.setText("Lesson already exists!");
@@ -452,7 +454,7 @@ public class AdminSceneController implements Initializable {
 		if (professor != null) {
 			try {
 				pm.insertToLesson(professor, LessonCode);
-				labelProfessorOps.setText("Successfully inserted professor " + professor.getSurname() + " from " + LessonCode);
+				labelProfessorOps.setText("Successfully inserted professor " + professor.getSurname() + " to " + LessonCode);
 				labelProfessorOps.setTextFill(Color.GREEN);
 				tableProfessorLessons.getItems().clear();
 				ObservableList<Lesson> llist = lm.listProfessorLessons();
